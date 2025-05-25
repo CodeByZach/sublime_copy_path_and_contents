@@ -1,0 +1,1 @@
+# sublime_copy_path_and_contents
