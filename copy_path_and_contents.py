@@ -1,5 +1,27 @@
 import sublime
 import sublime_plugin
+import os
+
+def get_plugin_settings():
+	return sublime.load_settings("CopyPathAndContents.sublime-settings")
+
+
+def get_separator():
+	settings = get_plugin_settings()
+	custom = settings.get("custom_separator", None)
+	if isinstance(custom, str) and custom.strip() != "":
+		return custom
+	line_breaks = settings.get("line_breaks", 6)
+
+	try:
+		count = int(line_breaks)
+		if count < 0:
+			count = 0
+	except (ValueError, TypeError):
+		count = 6
+
+	return os.linesep * count
+
 
 def get_path_and_contents(view):
 	file_path = view.file_name()
@@ -9,9 +31,9 @@ def get_path_and_contents(view):
 	try:
 		with open(file_path, "r", encoding="utf-8") as f:
 			file_contents = f.read()
-		return f"{file_path}:\n{file_contents}"
+		return f"{file_path}:{os.linesep}{file_contents}"
 	except Exception as e:
-		sublime.status_message(f"Failed to read {file_path}: {str(e)}")
+		sublime.status_message(f"Failed to read {file_path}: {e}")
 		return None
 
 
@@ -26,7 +48,7 @@ class CopyPathAndContentsCommand(sublime_plugin.TextCommand):
 
 
 class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
-	def run(self, group, index):
+	def run(self, group=-1, index=-1):
 		views = []
 
 		for sheet in self.window.sheets():
@@ -35,14 +57,11 @@ class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
 				if view and view.file_name():
 					views.append(view)
 
-		entries = []
-		for view in views:
-			entry = get_path_and_contents(view)
-			if entry:
-				entries.append(entry)
+		entries = [get_path_and_contents(view) for view in views if get_path_and_contents(view)]
 
 		if entries:
-			combined = ("\n\n\n\n\n\n").join(entries)
+			separator = get_separator()
+			combined = separator.join(entries)
 			sublime.set_clipboard(combined)
 			sublime.status_message("Paths and contents of selected tabs copied to clipboard.")
 		else:
