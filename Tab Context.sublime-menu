@@ -1,3 +1,3 @@
 [
-	{ "command": "copy_paths_and_contents_of_selected_tabs", "args": {"group":-1, "index": -1}, "caption": "Copy Paths and Contents of Selected Tabs" },
+	{ "caption": "Copy Paths and Contents of Selected Tabs", "command": "copy_paths_and_contents_of_selected_tabs", "args": { "group": -1, "index": -1, "always_visible": false } },
 ]
