@@ -1,10 +1,11 @@
 # Copy Path and Contents
 [![Latest Release](https://img.shields.io/github/tag/CodeByZach/sublime_copy_path_and_contents.svg?label=version)](https://github.com/CodeByZach/sublime_copy_path_and_contents/releases)
 
-Copy Path and Contents is a Sublime Text plugin that allows you to quickly copy the full file path and contents of one or more open files to your clipboard. It's perfect for sharing code snippets with context or for backing up selected buffers in one go.
+CopyPathAndContents is a Sublime Text plugin that allows you to quickly copy the full file path and contents of one or more open files to your clipboard. It's perfect for sharing code snippets with context or for backing up selected buffers in one go.
 
 ## Features
 
+- 🤖 Works seamlessly with AI assistants—grab whole files (with paths) in one copy/paste.
 - 📄 Copy the current file’s path and contents.
 - 🗂️ Copy all selected tabs’ paths and contents in the active group.
 - ⚙️ Highly customizable output formatting:
@@ -17,7 +18,7 @@ Install via [Package Control](https://packagecontrol.io/installation):
 
 1. Open the Command Palette: Ctrl+Shift+P / Cmd+Shift+P
 2. Select: Package Control: Install Package
-3. Search for: Copy Path and Contents
+3. Search for: CopyPathAndContents
 
 ## Commands
 
