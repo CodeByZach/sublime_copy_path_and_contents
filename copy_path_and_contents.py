@@ -24,8 +24,11 @@ def get_separator():
 
 
 def get_path_and_contents(view):
+	if not view:
+		return None
+
 	file_path = view.file_name()
-	if not file_path:
+	if not file_path or not os.path.isfile(file_path):
 		return None
 
 	try:
@@ -37,19 +40,35 @@ def get_path_and_contents(view):
 		return None
 
 
-class CopyPathAndContentsCommand(sublime_plugin.TextCommand):
-	def run(self, edit):
-		entry = get_path_and_contents(self.view)
-		if entry:
-			sublime.set_clipboard(entry)
-			sublime.status_message("Path and contents copied to clipboard.")
-		else:
-			sublime.error_message("No file path or contents available.")
+class CopyPathAndContentsCommand(sublime_plugin.WindowCommand):
+	def run(self):
+		sheet = self.window.active_sheet()
+		view = sheet.view() if sheet else None
+
+		if view and view.file_name():
+			entry = get_path_and_contents(view)
+			if entry:
+				sublime.set_clipboard(entry)
+				sublime.status_message("Path and contents copied to clipboard.")
+				return
+
+		sublime.error_message("No file path or contents available.")
+
+	def is_enabled(self):
+		sheet = self.window.active_sheet()
+		return bool(sheet and sheet.view() and sheet.view().file_name())
 
 
 class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
-	def run(self, group=-1, index=-1):
-		views = self._get_selected_views(group)
+	def _get_selected_views(self):
+		return [
+			sheet.view()
+			for sheet in self.window.sheets()
+			if sheet.is_selected() and sheet.view() and sheet.view().file_name()
+		]
+
+	def run(self):
+		views = self._get_selected_views()
 
 		entries = []
 		for view in views:
@@ -58,24 +77,15 @@ class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
 				entries.append(entry)
 
 		if entries:
-			separator = get_separator()
-			combined = separator.join(entries)
-			sublime.set_clipboard(combined)
+			sublime.set_clipboard(get_separator().join(entries))
 			sublime.status_message("Paths and contents of selected tabs copied to clipboard.")
 		else:
 			sublime.error_message("No valid files in selected tabs.")
 
-	def is_enabled(self, group=-1, index=-1):
-		return len(self._get_selected_views(group)) > 1
+	def is_enabled(self):
+		return len(self._get_selected_views()) >= 2
 
-	def is_visible(self, group=-1, index=-1):
-		return self.is_enabled(group, index)
-
-	def _get_selected_views(self, group):
-		selected_views = []
-		for sheet in self.window.sheets():
-			if sheet.group() == group and sheet.is_selected():
-				view = sheet.view()
-				if view and view.file_name():
-					selected_views.append(view)
-		return selected_views
+	def is_visible(self, hide_if_disabled=False):
+		if hide_if_disabled:
+			return self.is_enabled()
+		return True

@@ -15,7 +15,7 @@
 						"children":
 						[
 							{ "caption": "Copy Path and Contents", "command": "copy_path_and_contents" },
-							{ "caption": "Copy Paths and Contents of Selected Tabs", "command": "copy_paths_and_contents_of_selected_tabs", "args": { "group": -1, "index": -1 } }
+							{ "caption": "Copy Paths and Contents of Selected Tabs", "command": "copy_paths_and_contents_of_selected_tabs" }
 						]
 					}
 				]
