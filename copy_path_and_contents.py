@@ -67,7 +67,7 @@ class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
 			if sheet.is_selected() and sheet.view() and sheet.view().file_name()
 		]
 
-	def run(self):
+	def run(self, **kwargs):
 		views = self._get_selected_views()
 
 		entries = []
