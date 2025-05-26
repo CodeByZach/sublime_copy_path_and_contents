@@ -49,15 +49,13 @@ class CopyPathAndContentsCommand(sublime_plugin.TextCommand):
 
 class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
 	def run(self, group=-1, index=-1):
-		views = []
+		views = self._get_selected_views(group)
 
-		for sheet in self.window.sheets():
-			if sheet.group() == group and sheet.is_selected():
-				view = sheet.view()
-				if view and view.file_name():
-					views.append(view)
-
-		entries = [get_path_and_contents(view) for view in views if get_path_and_contents(view)]
+		entries = []
+		for view in views:
+			entry = get_path_and_contents(view)
+			if entry:
+				entries.append(entry)
 
 		if entries:
 			separator = get_separator()
@@ -66,3 +64,18 @@ class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
 			sublime.status_message("Paths and contents of selected tabs copied to clipboard.")
 		else:
 			sublime.error_message("No valid files in selected tabs.")
+
+	def is_enabled(self, group=-1, index=-1):
+		return len(self._get_selected_views(group)) > 1
+
+	def is_visible(self, group=-1, index=-1):
+		return self.is_enabled(group, index)
+
+	def _get_selected_views(self, group):
+		selected_views = []
+		for sheet in self.window.sheets():
+			if sheet.group() == group and sheet.is_selected():
+				view = sheet.view()
+				if view and view.file_name():
+					selected_views.append(view)
+		return selected_views
