@@ -59,7 +59,7 @@ class CopyPathAndContentsCommand(sublime_plugin.WindowCommand):
 		return bool(sheet and sheet.view() and sheet.view().file_name())
 
 
-class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
+class CopyPathsAndContentsOfSelectedFilesCommand(sublime_plugin.WindowCommand):
 	def _get_selected_views(self):
 		return [
 			sheet.view()
@@ -78,9 +78,9 @@ class CopyPathsAndContentsOfSelectedTabsCommand(sublime_plugin.WindowCommand):
 
 		if entries:
 			sublime.set_clipboard(get_separator().join(entries))
-			sublime.status_message("Paths and contents of selected tabs copied to clipboard.")
+			sublime.status_message("Paths and contents of selected files copied to clipboard.")
 		else:
-			sublime.error_message("No valid files in selected tabs.")
+			sublime.error_message("No valid files selected.")
 
 	def is_enabled(self):
 		return len(self._get_selected_views()) >= 2

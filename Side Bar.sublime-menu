@@ -1,4 +1,4 @@
 [
-	{ "caption": "Copy Path and Contents of Current File", "command": "copy_path_and_contents" },
+	{ "caption": "Copy Path and Contents", "command": "copy_path_and_contents" },
 	{ "caption": "Copy Paths and Contents of Selected Files", "command": "copy_paths_and_contents_of_selected_files" }
 ]
